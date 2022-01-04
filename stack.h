@@ -60,4 +60,6 @@ void* stack_pop(stack* s);
  */
 void* stack_peek(stack* s);
 
+bool stack_ensure_capacity(stack* s, size_t cap);
+
 #endif //C_COLLECTIONS_STACK_H
