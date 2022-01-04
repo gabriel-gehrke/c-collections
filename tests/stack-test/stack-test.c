@@ -1,5 +1,6 @@
-#include "../stack.h"
+#include "../../stack.h"
 #include <stdio.h>
+#include <stdint.h>
 
 #define STACK_CAP 128
 #define assert(statement) if (!(statement)) {fprintf(stderr, "ERROR: Assertion failed: %s (%s:%d)\n", #statement, __FILE__, __LINE__); exit(1);} //else {printf("Assertion %s succeeded.\n", #statement);}
@@ -11,7 +12,7 @@ static void test_push(stack* s) {
 
     // fill stack
     for (int i = start_size; i < s->capacity; i++) {
-        void* val = (void*) ((unsigned int) rand()) + 1L;
+        void* val = (void*) ((uintptr_t) rand()) + 1;
 
         // test push
         assert(stack_push(s, val) == true);
@@ -80,7 +81,7 @@ int main() {
     test_stack_stack();
     test_heap_stack();
     
-    puts("\nAll Assertions succeeded.");
+    puts("\nAll tests succeeded.");
 
     return 0;
 }
