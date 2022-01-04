@@ -60,6 +60,14 @@ void* stack_pop(stack* s);
  */
 void* stack_peek(stack* s);
 
+/**
+ * @brief Ensures, that the stack has capacity for at least "cap" elements. This method only
+ * works for resizeable stacks.
+ * 
+ * @param s the stack.
+ * @param cap the capacity.
+ * @return true on success, false if capacity ensurance failed (perhaps because the stack is not resizeable)
+ */
 bool stack_ensure_capacity(stack* s, size_t cap);
 
 #endif //C_COLLECTIONS_STACK_H
