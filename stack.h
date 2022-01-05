@@ -30,8 +30,10 @@ typedef struct {
 stack stack_wrap(void** array, size_t array_len);
 
 /**
- * @brief Allocates a new stack with the given capacity on the heap.
- * If the elements exceed the capacity, it gets automatically increased.
+ * @brief Allocates a new stack with the given capacity on the heap that dynamically
+ * increases it's size to fit variable amounts of elements.
+ * (Note: If the wanted capacity could not be allocated, the capacity gets set to 0
+ * and the array will point to NULL)
  * 
  * @param capacity the capacity (in elements) of the new stack.
  * @return stack 

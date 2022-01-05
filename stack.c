@@ -1,8 +1,13 @@
 #include "stack.h"
 
-static void stack_grow(stack* s, size_t cap) {
-    s->array = (void**) realloc(s->array, cap * sizeof(void**));
+static bool stack_grow(stack* s, size_t cap) {
+    void** new_arr = (void**) realloc(s->array, cap * sizeof(void**));
+    if (new_arr == NULL) {
+        return false;
+    }
+    s->array = new_arr;
     s->capacity = cap;
+    return true;
 }
 
 stack stack_wrap(void** array, size_t array_len) {
@@ -18,16 +23,18 @@ stack stack_wrap(void** array, size_t array_len) {
 stack stack_new(size_t capacity) {
     void** array = (void**) malloc(capacity * sizeof(void**));
     stack s = stack_wrap(array, capacity);
-    s.resizeable = true;
+    if (array == NULL) {
+        s.capacity = 0;
+    } else {
+        s.resizeable = true;
+    }
     return s;
 }
 
 bool stack_push(stack* s, void* elem) {
     if (s->size >= s->capacity) {
-        // stack is full
-        if (!s->resizeable) return false;
-
-        stack_grow(s, s->capacity * 2);
+        // try to resize
+        if (!stack_ensure_capacity(s, s->capacity << 1)) return false;
     }
 
     s->array[s->size++] = elem;
@@ -50,6 +57,5 @@ bool stack_ensure_capacity(stack* s, size_t cap) {
     if (s->capacity >= cap) return true;
     if (!s->resizeable) return false;
 
-    stack_grow(s, cap);
-    return true;
+    return stack_grow(s, cap);
 }
