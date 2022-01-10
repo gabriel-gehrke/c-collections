@@ -35,4 +35,11 @@ void* deque_pop(deque* d);
 
 bool deque_ensure_capacity(deque* d, size_t capacity);
 
+
+// optional operations, might get removed
+
+bool deque_insert_at(deque* d, void* element, size_t pos);
+
+void* deque_get_at(deque* d, size_t pos);
+
 #endif // C_COLLECTIONS_DEQUE_H

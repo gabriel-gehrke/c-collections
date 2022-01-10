@@ -1,4 +1,9 @@
 #include "deque.h"
+#include "stack.h"
+
+static inline size_t min(size_t a, size_t b) {
+    return (a <= b) ? a : b;
+}
 
 static bool deque_grow(deque* d, size_t capacity) {
     // copy elements to temporary array
@@ -108,4 +113,49 @@ bool deque_ensure_capacity(deque* d, size_t capacity) {
     if (!d->resizeable) return false;
 
     return deque_grow(d, capacity);
+}
+
+// UNTESTED
+bool deque_insert_at(deque* d, void* element, const size_t pos) {
+    if (d->size >= d->capacity) return false;
+    if (pos > d->size) return false;
+
+    if (pos == 0)           return deque_prepend(d, element);
+    if (pos == d->size - 1) return deque_append(d, element);
+
+    const size_t _s = min(pos, d->size - pos);
+    void* temp[_s];
+    stack temp_stack = stack_wrap(temp, _s);
+
+    if (pos <= d->size / 2) {
+        // insert item into front
+        for (size_t i = 0; i < _s; i++) {
+            stack_push(&temp_stack, deque_shift(d));
+        }
+        deque_prepend(d, element);
+        for (size_t i = 0; i < _s; i++) {
+            deque_prepend(d, stack_pop(&temp_stack));
+        }
+    } else {
+        // insert item into back
+        for (size_t i = 0; i < _s; i++) {
+            stack_push(&temp_stack, deque_pop(d));
+        }
+        deque_append(d, element);
+        for (size_t i = 0; i < _s; i++) {
+            deque_append(d, stack_pop(&temp_stack));
+        }
+    }
+
+    return true;
+}
+
+// UNTESTED
+void* deque_get_at(deque* d, size_t pos) {
+    if (pos >= d->size) return NULL;
+
+    pos += d->head;
+    if (pos >= d->size) pos -= d->size;
+
+    return d->array[pos];
 }
